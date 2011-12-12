@@ -131,7 +131,7 @@ class GithubPRManager < Sinatra::Base
     commits.each do |commit|
       authors.push(commit.author.name + " <" + commit.author.email + ">")
     end
-    authors.uniq!.to_a
+    authors.uniq.to_a
   end
 
   def get_base_args(pr)
@@ -177,6 +177,7 @@ class GithubPRManager < Sinatra::Base
       editor = `git config --get core.editor`.strip
     end
     args[:editor] = editor
+    args[:author] = author
     `#{Templates.squash(args)}`
     @current_branch, @modified_files = get_repo_status
     if (@modified_files.size.eql?(0) && CONFIG["app"]["auto_close"].eql?(true))
