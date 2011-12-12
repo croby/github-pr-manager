@@ -11,6 +11,7 @@ Prerequisites: ruby (tested on 1.9.2), rubygems
 To run:
 
 1. Copy config.yml.sample to config.yml and edit it to point to the correct places
+
 ```
 'org' is your organization, or your username
 'repo' is the repository you want to point to
