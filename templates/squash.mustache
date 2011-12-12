@@ -1,9 +1,9 @@
 cd {{{clone}}} && \
 git checkout {{{base}}} && \
-git fetch http://github.com/{{{org}}}/{{{repo}}}.git && \
-git pull http://github.com/{{{org}}}/{{repo}}.git {{{base}}} && \
+git fetch git://github.com/{{{org}}}/{{{repo}}}.git && \
+git pull git://github.com/{{{org}}}/{{repo}}.git {{{base}}} && \
 git checkout -B {{{branch}}} {{{base}}} && \
-git pull http://github.com/{{{user}}}/{{{repo}}}.git {{{head}}} &&
+git pull git://github.com/{{{user}}}/{{{repo}}}.git {{{head}}} &&
 git checkout -B {{{branch}}}-{{{base}}} {{{base}}} && \
 git merge --squash {{{branch}}} && \
 GIT_EDITOR="{{{pwd}}}/lib/prepend_message.rb -m \"{{{title}}}\"" git commit --author "{{{author}}}" && \

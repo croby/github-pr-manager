@@ -1,6 +1,6 @@
 cd {{{clone}}} && \
 git checkout {{{base}}} && \
-git fetch http://github.com/{{{org}}}/{{{repo}}}.git && \
-git pull http://github.com/{{{org}}}/{{{repo}}}.git {{{base}}} && \
+git fetch git://github.com/{{{org}}}/{{{repo}}}.git && \
+git pull git://github.com/{{{org}}}/{{{repo}}}.git {{{base}}} && \
 git checkout -B {{{user}}}-{{{head}}} {{{base}}} && \
 git pull http://github.com/{{{user}}}/{{{repo}}}.git {{{head}}}
