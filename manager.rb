@@ -29,8 +29,8 @@ end
 class GithubPRManager < Sinatra::Base
   include ActionView::Helpers::DateHelper
 
-  CONFIG = YAML.load_file("config.yml")
-  AUTH = YAML.load_file("auth.yml")
+  CONFIG = YAML.load_file("config/config.yml")
+  AUTH = YAML.load_file("config/auth.yml")
   PER_PAGE = "#{CONFIG["app"]["per_page"]}"
   ORG_TITLE = "#{CONFIG["repo"]["org"]}"
   REPO_TITLE = "#{CONFIG["repo"]["repo"]}"
@@ -151,7 +151,8 @@ class GithubPRManager < Sinatra::Base
     pr = get_pull_req(pull_req_id)
     if pr["mergeable"]
       args = get_base_args(pr)
-      success = !(`#{Templates.validate(args)}`.include? "CONFLICT")
+      validate = `#{Templates.validate(args)}`
+      success = !(validate.include? "CONFLICT")
       [pr, success]
     else
       [pr, false]
