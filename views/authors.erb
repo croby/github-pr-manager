@@ -1,0 +1,11 @@
+<table>
+<% if @authors %>
+  <% @authors.each_index do |i| %>
+    <tr <% if i.eql? 0 %>class="selected"<% end %>>
+      <td>
+        <code><%=h @authors[i] %></code>
+      </td>
+    </tr>
+  <% end %>
+<% end %>
+</table>

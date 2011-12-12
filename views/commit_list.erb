@@ -1,0 +1,16 @@
+<% if @commits %>
+  <table>
+    <colgroup>
+      <col class="sha">
+      <col class="author">
+      <col class="msg">
+    </colgroup>
+  <% @commits.each do |commit| %>
+    <tr data-sha="<%= commit.sha[0..9] %>">
+      <td><code><%= commit.sha[0..9] %></code></td>
+      <td><code><%= commit.author.name[0...15] %><% if commit.author.name.length > 15 %>…<% end %></code></td>
+      <td><code><%= commit.short_message[0...72] %><% if commit.short_message.length > 72 %>…<% end %></code></td>
+    </tr>
+  <% end %>
+  </table>
+<% end %>

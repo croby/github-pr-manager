@@ -1,0 +1,4 @@
+.bundle/config
+.rvmrc
+auth.yml
+config.yml

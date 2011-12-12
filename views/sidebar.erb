@@ -1,0 +1,25 @@
+<% cssclass = @new ? " new" : "" %>
+
+<h2>Status<button class="btn small refresh" title="Refresh current branch status" id="refresh">↻</button></h2>
+
+<% if !@current_branch.eql?("master") %>
+  <button class="btn info reset"<% if !@modified_files.empty? %>disabled="disabled"<% end %>>Reset to master</button>
+  <% if !@modified_files.empty? %>
+    <button class="btn danger reset" data-harshness="force">Force reset master</button>
+  <% end %>
+<% end %>
+
+<div>
+  Current branch:
+  <code id="current_branch" class="<%= cssclass %>"><%= @current_branch %></code>
+</div>
+
+<div>
+  Branch status:
+<% if @modified_files.empty? %>
+  <span class="label success<%= cssclass %>">clean</code>
+<% else %>
+  <span class="label important<%= cssclass %>">dirty</span>
+  <pre class="modified<%= cssclass %>"><%= @modified_files %></pre>
+<% end %>
+</div>

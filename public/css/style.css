@@ -1,0 +1,84 @@
+/* General */
+#main{margin-left:250px;}
+button.btn.small.refresh {padding:0px 5px;margin-top:9px;float:right;font-size:16px;}
+.pagination {margin:10px 0 20px 250px; float:left;}
+
+/* Bootstrap overrides */
+.well{padding:10px;}
+.sidebar {top:50px;position:fixed;}
+.content {margin-top:50px;}
+.topbar .brand, .topbar .brand a{font-weight:bold;color:#fff}
+.topbar div > ul button,.nav button{display:block;float:none;line-height:19px;padding:10px 10px 11px;text-decoration:none;background-color:transparent;color:white;}
+
+/* Sidebar */
+.sidebar {width:200px;}
+.sidebar h2{margin-bottom:10px;}
+.sidebar div{margin:5px;}
+.sidebar pre{margin-top:10px;}
+.sidebar .new{display:none;}
+.sidebar .reset{margin-bottom:5px;}
+
+/* Pull Requests */
+.pull_request{float:left;width:670px;margin:10px 0px;position:relative;}
+.pull_request h3{font-size:14px;padding:0;margin:0;line-height:1.3em;}
+.pull_request a.pull_request_title{color:black;font-weight:bold;}
+.pull_request span.author{float:left;width:100%;}
+.pull_request span.author a{color:#5F5F5F;margin:0 0 1em 0;}
+.pull_request .label.github-label{text-transform:none;font-size:11px;}
+.pull_request .pull_request_number{float:left;width:40px;margin-right:10px;}
+.pull_request .pull_request_info{float:left;width:460px;}
+.pull_request .pull_request_actions{float:right;margin-right:20px;}
+.pull_request .pull_request_assignee{position:absolute;top:0;right:0;}
+.pull_request .pull_request_assignee img{height:16px;width:16px;border-radius:2px;background-color:#FCFF00;padding:2px;border:1px solid #DDDDDD;}
+
+/* Merging */
+#validate #validate_in_progress h3{text-align:center;}
+#validate{width:800px;margin-left:-400px;}
+#validate .modal-header h3{line-height:1.2em;padding:10px;}
+#validate .modal-header h3 a{text-decoration:none;color:black;}
+#validate .modal-header h3 a:hover{text-decoration:underline;}
+#validate table td{padding:2px;}
+
+.list_data{max-height:300px;overflow-y:auto;overflow-x:hidden;}
+.list_data .sha{width:89px;}
+.list_data .author{width:128px;}
+.list_data .msg{width:542px;}
+.list_data code{background-color:#fff;}
+
+.merge_step_one .well{margin-top:10px;}
+
+.merge_step_three_commit_authors tr.selected{background-image:linear-gradient(bottom,rgb(247,247,59) 7%,rgb(255,248,143) 54%);background-image:-o-linear-gradient(bottom,rgb(247,247,59) 7%,rgb(255,248,143) 54%);background-image:-moz-linear-gradient(bottom,rgb(247,247,59) 7%,rgb(255,248,143) 54%);background-image:-webkit-linear-gradient(bottom,rgb(247,247,59) 7%,rgb(255,248,143) 54%);background-image:-ms-linear-gradient(bottom,rgb(247,247,59) 7%,rgb(255,248,143) 54%);background-image:-webkit-gradient(linear,left bottom,left top,color-stop(0.07,rgb(247,247,59)),color-stop(0.54,rgb(255,248,143)));}
+.merge_step_three_commit_authors tr.selected code{background-color:transparent;}
+.merge_step_three_commit_authors td{cursor:pointer;}
+.merge_step_three_commit_authors td code:hover{text-decoration:underline;}
+
+.merge_message_step, .merge_message_step label, .merge_message_step span{width:100%;}
+.merge_message_step label{text-align:left;font-weight:bold;font-size:16px;}
+.merge_message_step #merge_message_header{margin-bottom:10px;float:left;}
+.merge_message_step #merge_message{width:80%;height:100px;margin-left:10px;}
+
+/* Loading Animation */
+.loading{height:70px;}
+#pull_request_loading{margin-top:150px}
+#pull_request_loading h3{text-align:center;margin-bottom:50px}
+#modal_loading .loading, #validate .loading{margin-top:20px;}
+
+/* This awesome CSS came from http://www.alessioatzeni.com/blog/css3-loading-animation-loop/ */
+.ball{background-color:rgba(0,0,0,0);border:5px solid rgba(4,156,219,0.9);opacity:.9;border-top:5px solid rgba(0,0,0,0);border-left:5px solid rgba(0,0,0,0);border-radius:50px;box-shadow:0 0 35px #0064CD;width:50px;height:50px;margin:0 auto;-moz-animation:spin 2s infinite linear;-webkit-animation:spin 2s infinite linear;}
+.ball1{background-color:rgba(0,0,0,0);border:5px solid rgba(4,156,219,0.9);opacity:.9;border-top:5px solid rgba(0,0,0,0);border-left:5px solid rgba(0,0,0,0);border-radius:50px;box-shadow:0 0 15px #0064CD;width:30px;height:30px;margin:0 auto;position:relative;top:-50px;-moz-animation:spinoff 2s infinite linear;-webkit-animation:spinoff 2s infinite linear;}
+@-moz-keyframes spin{
+    0%{-moz-transform:rotate(0deg);}
+    100%{-moz-transform:rotate(360deg);}
+}
+@-moz-keyframes spinoff{
+    0%{-moz-transform:rotate(0deg);}
+    100%{-moz-transform:rotate(-360deg);}
+}
+@-webkit-keyframes spin{
+    0%{-webkit-transform:rotate(0deg);}
+    100%{-webkit-transform:rotate(360deg);}
+}
+@-webkit-keyframes spinoff{
+    0%{-webkit-transform:rotate(0deg);}
+    100%{-webkit-transform:rotate(-360deg);}
+}

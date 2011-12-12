@@ -1,0 +1,10 @@
+repo:
+  org: jquery
+  repo: jquery
+  issues: true
+local:
+  clone: /opt/projects/jquery
+  remote: origin
+app:
+  per_page: 30
+  auto_close: true
