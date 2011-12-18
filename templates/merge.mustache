@@ -2,8 +2,6 @@ cd {{{clone}}} && \
 git checkout {{{base}}} && \
 git fetch git://github.com/{{{org}}}/{{{repo}}}.git && \
 git pull git://github.com/{{{org}}}/{{{repo}}}.git {{{base}}} && \
-git checkout -B {{{user}}}-{{{head}}} {{{base}}} && \
-git pull git://github.com/{{{user}}}/{{{repo}}}.git {{{head}}} && \
-git checkout {{{base}}} && \
-git merge --log --no-ff -m "{{{message}}}" {{{branch}}} && \
+git fetch {{{user}}} && \
+git merge --log --no-ff -m "{{{message}}}" {{{user}}}/{{{head}}} && \
 git push {{{remote}}} {{{base}}}

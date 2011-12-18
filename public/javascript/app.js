@@ -38,6 +38,7 @@ $(function() {
     };
 
     var do_reset = function( force ) {
+        $( ".modal_actions button:not(.closebtn)" ).attr("disabled", "disabled");
         var params = {
             force: force || false
         };
@@ -48,6 +49,7 @@ $(function() {
                 refresh_sidebar( data );
                 if ( force ) {
                     $( "#force_warning" ).modal( "hide" );
+                    $( ".modal_actions button:not(.closebtn)" ).removeAttr("disabled");
                     $( ".pull_request_actions button:disabled" ).removeAttr("disabled");
                 }
             }
@@ -131,7 +133,7 @@ $(function() {
     };
 
     var do_merge = function( issue, type, author ) {
-        $( ".merge_actions button:not(.closebtn)" ).attr("disabled", "disabled");
+        $( ".modal_actions button:not(.closebtn)" ).attr("disabled", "disabled");
         var params = {
             message: get_merge_message()
         };
@@ -154,7 +156,7 @@ $(function() {
         if ( data.success ) {
             $modal.off( "hidden" ).on( "hidden", function() {
                 $( "div[data-issue='" + issue + "']" ).fadeOut( "slow" );
-                $( ".merge_actions button:disabled" ).removeAttr( "disabled" );
+                $( ".modal_actions button:disabled" ).removeAttr( "disabled" );
             });
             $modal.modal( "hide" );
         } else {

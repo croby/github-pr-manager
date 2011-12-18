@@ -3,7 +3,8 @@ git checkout {{{base}}} && \
 git fetch git://github.com/{{{org}}}/{{{repo}}}.git && \
 git pull git://github.com/{{{org}}}/{{repo}}.git {{{base}}} && \
 git checkout -B {{{branch}}} {{{base}}} && \
-git pull git://github.com/{{{user}}}/{{{repo}}}.git {{{head}}} &&
+git fetch {{{user}}} && \
+git merge {{{user}}}/{{{head}}} &&
 git checkout -B {{{branch}}}-{{{base}}} {{{base}}} && \
 git merge --squash {{{branch}}} && \
 GIT_EDITOR="{{{pwd}}}/lib/prepend_message.rb -m \"{{{title}}}\"" git commit --author "{{{author}}}" && \

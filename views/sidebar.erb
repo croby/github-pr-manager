@@ -4,9 +4,9 @@
 
 <% if !@current_branch.eql?("master") %>
   <button class="btn info reset"<% if !@modified_files.empty? %>disabled="disabled"<% end %>>Reset to master</button>
-  <% if !@modified_files.empty? %>
-    <button class="btn danger reset" data-harshness="force">Force reset master</button>
-  <% end %>
+<% end %>
+<% if !@modified_files.empty? %>
+  <button class="btn danger reset" data-harshness="force">Force reset master</button>
 <% end %>
 
 <div>

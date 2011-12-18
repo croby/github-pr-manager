@@ -36,6 +36,11 @@ class GithubPRManager < Sinatra::Base
   REPO_TITLE = "#{CONFIG["repo"]["repo"]}"
   $md_processor = Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(:hard_wrap => true), :autolink => true, :space_after_headers => true)
 
+  # ====================
+  # = Helper functions =
+  # ====================
+
+  # Handles requests to the Github API
   def do_request(uri, parse, method = "GET", args = {})
     uri = URI(uri)
 
@@ -67,6 +72,7 @@ class GithubPRManager < Sinatra::Base
     res
   end
 
+  # Grab all the pull requests for the current repository
   def get_pull_requests(page)
     page = page || 0
     pull_requests = do_request("https://api.github.com/repos/#{CONFIG["repo"]["org"]}/#{CONFIG["repo"]["repo"]}/pulls?page=#{page}&per_page=#{PER_PAGE}", true)
@@ -75,7 +81,7 @@ class GithubPRManager < Sinatra::Base
       assignees = []
       labels = []
       # No way to grab just issues that have a pull request at this time, so we have to either
-      # do it this way, or issue one request per pull request to get it's associated issue
+      # do it this way, or issue one request per pull request to get its associated issue
       issues = do_request("https://api.github.com/repos/#{CONFIG["repo"]["org"]}/#{CONFIG["repo"]["repo"]}/issues?per_page=3000", true)
       pull_requests.each do |pr|
         found_issue = false
@@ -98,6 +104,7 @@ class GithubPRManager < Sinatra::Base
     end
   end
 
+  # Find the status of the local clone
   def get_repo_status
     args = {:clone => CONFIG["local"]["clone"]}
     st = `#{Templates.status(args)}`
@@ -106,6 +113,8 @@ class GithubPRManager < Sinatra::Base
     [current_branch, modified_files]
   end
 
+  # Reset the current branch to master
+  # if force, pass the -f option on to the checkout
   def reset_to_master(force)
     args = {
       :clone => CONFIG["local"]["clone"]
@@ -120,11 +129,13 @@ class GithubPRManager < Sinatra::Base
     do_request("https://api.github.com/repos/#{CONFIG["repo"]["org"]}/#{CONFIG["repo"]["repo"]}/pulls/#{pull_req_id}", true)
   end
 
+  # Grab all the commits on this pull request
   def get_commits_between(pr)
     repo = Grit::Repo.new("#{CONFIG["local"]["clone"]}")
     repo.commits_between(pr["base"]["sha"], pr["head"]["sha"])
   end
 
+  # Find all the authors on this pull request
   def get_authors(pr)
     commits = get_commits_between(pr)
     authors = []
@@ -134,6 +145,7 @@ class GithubPRManager < Sinatra::Base
     authors.uniq.to_a
   end
 
+  # Set up the common arguments to pass on to each git command template
   def get_base_args(pr)
     {
       :clone => CONFIG["local"]["clone"],
@@ -145,6 +157,15 @@ class GithubPRManager < Sinatra::Base
       :user => pr["head"]["user"]["login"],
       :branch => pr["head"]["user"]["login"] + "-" + pr["head"]["ref"]
     }
+  end
+
+  # Add a remote for the pull requester if it doesn't already exist
+  # This is useful for merging
+  def set_remote(args)
+    remote = `#{Templates.check_remote(args)}`
+    if (remote.empty?)
+      `#{Templates.add_remote(args)}`
+    end
   end
 
   def validate_pull_request(pull_req_id)
@@ -163,6 +184,7 @@ class GithubPRManager < Sinatra::Base
     pr = get_pull_req(pull_req_id)
     args = get_base_args(pr)
     args[:message] = message
+    set_remote(args)
     `#{Templates.merge(args)}`
     pr
   end
@@ -170,8 +192,10 @@ class GithubPRManager < Sinatra::Base
   def merge_via_squash(pull_req_id, author, message)
     pr = get_pull_req(pull_req_id)
     args = get_base_args(pr)
-    args[:title] = pr["title"] + "\n\n"
-    args[:message] = message
+    # need to double-escape the title in the GIT_EDITOR message because
+    # the argument is quoted itself
+    args[:title] = pr["title"].gsub("\"", "\\\\\\\\\\\"") + "\n\n"
+    args[:message] = message.gsub("\"", "\\\"")
     args[:pwd] = `pwd`.strip
     editor = `echo $GIT_EDITOR`.strip
     if editor.empty?
@@ -179,6 +203,7 @@ class GithubPRManager < Sinatra::Base
     end
     args[:editor] = editor
     args[:author] = author
+    set_remote(args)
     `#{Templates.squash(args)}`
     @current_branch, @modified_files = get_repo_status
     if (@modified_files.size.eql?(0) && CONFIG["app"]["auto_close"].eql?(true))
@@ -205,6 +230,10 @@ class GithubPRManager < Sinatra::Base
     do_request("https://api.github.com/repos/#{CONFIG["repo"]["org"]}/#{CONFIG["repo"]["repo"]}/pulls/#{pr["number"]}", false, "PATCH", {:state => "closed"})
   end
 
+  # ========================
+  # = Sinatra view helpers =
+  # ========================
+
   helpers do
     def md(text)
       $md_processor.render(text)
@@ -216,6 +245,10 @@ class GithubPRManager < Sinatra::Base
       time_ago_in_words(Time.parse(text))
     end
   end
+
+  # ================================
+  # = Routing and request handling =
+  # ================================
 
   get "/" do
     @org_title = ORG_TITLE
