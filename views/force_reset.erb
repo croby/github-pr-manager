@@ -1,14 +1,16 @@
-<div class="modal-header">
-    <a href="#" class="close">×</a>
-    <h3>Force Reset to Master</h3>
-</div>
-<div class="modal-body">
-    <p>Forcing a reset to master will lose any uncommitted changes in your current branch. You'll lose the following modifications:</p>
-    <pre class="modified"><%= @modified_files %></pre>
-</div>
-<div class="modal-footer">
-    <div class="modal_actions">
-        <button class="btn danger" data-action="continue">I know the risks, do it anyway</button>
-        <button class="btn closebtn">I'll clean up my branch manually first</button>
-    </div>
+<div id="force_warning" class="modal hide fade">
+  <div class="modal-header">
+      <a href="#" class="close">×</a>
+      <h3>Force Reset to Master</h3>
+  </div>
+  <div class="modal-body">
+      <p>Forcing a reset to master will lose any uncommitted changes in your current branch. You'll lose the following modifications:</p>
+      <pre class="modified"><%= @modified_files %></pre>
+  </div>
+  <div class="modal-footer">
+      <div class="modal_actions">
+          <button class="btn danger" data-action="continue">I know the risks, do it anyway</button>
+          <button class="btn closebtn">I'll clean up my branch manually first</button>
+      </div>
+  </div>
 </div>

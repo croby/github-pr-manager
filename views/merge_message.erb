@@ -1,0 +1,17 @@
+<div class="merge_header">
+  <% if squash %>Squash merge<% else %>Merge<% end %> message:
+</div>
+<div class="merge_container">
+  <span class="merge_message_header">Merge pull request #<%= @pr["number"] %> from <%= @pr["head"]["repo"]["owner"]["login"] %>/<%= @pr["head"]["ref"] %></span>
+  <textarea class="merge_message"><%= @pr["title"] %></textarea>
+  <div class="authors_wrapper"<% if ( (squash && @authors && @authors.size < 2) || !squash ) %> style="display:none"<% end %>>
+    <span>Choose an author to attribute this pull request to:</span>
+    <div class="list_data authors">
+      <%= erb :authors, :layout => false %>
+    </div>
+  </div>
+  <div class="merge_actions">
+    <button class="btn" data-action="cancel">Cancel</button>
+    <button class="btn success" data-action="confirm">Confirm <% if squash %>squash then <% end %>merge</button>
+  </div>
+</div>

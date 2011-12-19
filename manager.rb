@@ -126,21 +126,25 @@ class GithubPRManager < Sinatra::Base
   end
 
   def get_pull_req(pull_req_id)
-    do_request("https://api.github.com/repos/#{CONFIG["repo"]["org"]}/#{CONFIG["repo"]["repo"]}/pulls/#{pull_req_id}", true)
+    pr = do_request("https://api.github.com/repos/#{CONFIG["repo"]["org"]}/#{CONFIG["repo"]["repo"]}/pulls/#{pull_req_id}", true)
+    if CONFIG["repo"]["issues"]
+      issue = do_request("https://api.github.com/repos/#{CONFIG["repo"]["org"]}/#{CONFIG["repo"]["repo"]}/issues/#{pull_req_id}", true)
+      pr.merge!(issue)
+    end
+    pr
   end
 
   # Grab all the commits on this pull request
-  def get_commits_between(pr)
-    repo = Grit::Repo.new("#{CONFIG["local"]["clone"]}")
-    repo.commits_between(pr["base"]["sha"], pr["head"]["sha"])
+  def get_commits(pull_req_id)
+    do_request("https://api.github.com/repos/#{CONFIG["repo"]["org"]}/#{CONFIG["repo"]["repo"]}/pulls/#{pull_req_id}/commits", true)
   end
 
   # Find all the authors on this pull request
-  def get_authors(pr)
-    commits = get_commits_between(pr)
+  def get_authors(commit_list)
     authors = []
-    commits.each do |commit|
-      authors.push(commit.author.name + " <" + commit.author.email + ">")
+    commit_list.each do |commit|
+      commit = commit["commit"]
+      authors.push(commit["author"]["name"] + " <" + commit["author"]["email"] + ">")
     end
     authors.uniq.to_a
   end
@@ -274,32 +278,31 @@ class GithubPRManager < Sinatra::Base
     {:pulls => pulls, :has_next_page => has_next_page}.to_json
   end
 
+  get "/pulls/:pull_req_id" do
+    @pr = get_pull_req(params[:pull_req_id])
+    @current_branch, @modified_files = get_repo_status
+    @commits = get_commits(params[:pull_req_id])
+    @authors = get_authors(@commits)
+    erb :pull_request_focus, :layout => false
+  end
+
   get "/sidebar" do
     content_type :json
     render_sidebar.to_json
   end
 
-  get "/reset" do
+  post "/reset" do
     reset_to_master(params[:force])
     content_type :json
-    render_sidebar.to_json
+    @current_branch, @modified_files = get_repo_status
+    {:branch => @current_branch, :sidebar => render_sidebar}.to_json
   end
 
   get "/validate/:pull_req_id" do
     @pr, success = validate_pull_request(params[:pull_req_id])
-    if success
-      @commits = get_commits_between(@pr)
-      @authors = get_authors(@pr)
-    end
     @current_branch, @modified_files = get_repo_status
-    pr_html = erb :pull_request_validate, :layout => false
     content_type :json
-    {:pr_html => pr_html, :sidebar=> render_sidebar, :success => success}.to_json
-  end
-
-  get "/merge/:pull_req_id" do
-    @pr = get_pull_req(params[:pull_req_id])
-    erb :merge, :layout => false
+    {:success => success, :branch => @current_branch}.to_json
   end
 
   post "/merge/:method/:pull_req_id" do

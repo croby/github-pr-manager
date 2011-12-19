@@ -29,75 +29,15 @@
               <%= yield %>
               <div id="pull_requests">
               </div>
+              <div id="pull_request_focus">
+              </div>
               <div class="pagination" style="display:none">
                   <%= erb :pagination, :layout => false %>
               </div>
           </div>
         </div>
 
-        <!-- Modal Dialogs -->
-        <div id="validate" class="modal hide fade">
-
-            <div class="modal-header">
-                <a href="#" class="close">×</a>
-                <h3>Validating <span id="validate-issue"><a href="" target="_blank"></a></span></h3>
-            </div>
-
-            <div class="modal-body">
-                <div id="validate_in_progress">
-                    <h3>Creating a new branch &amp; pulling this pull request into the branch...</h3>
-                    <div class="loading">
-                      <div class="ball"></div>
-                      <div class="ball1"></div>
-                    </div>
-                </div>
-                <div id="validate_merge_options" class="hide">
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <div id="validation_actions" class="modal_actions">
-                    <div class="merge_step merge_step_one hide">
-                        <button class="btn primary" data-continue="true">Validation successful</button>
-                    </div>
-                    <div class="merge_step merge_step_two hide">
-                        <button class="btn success" data-merge-type="merge">Merge and push</button>
-                        <button class="btn primary" data-merge-type="squash">Squash then merge</button>
-                    </div>
-                    <div class="merge_step merge_step_three_squash hide">
-                        <button class="btn success">Merge via squash and push</button>
-                    </div>
-                    <div class="merge_step merge_conflict">
-                        <button class="btn closebtn primary">Close<button>
-                    </div>
-                    <button class="btn closebtn cancelbtn">Cancel</button>
-                </div>
-            </div>
-
-        </div>
-
-        <div id="force_warning" class="modal hide fade">
-            <%= erb :force_reset, :layout => false %>
-        </div>
-
-        <div id="merge" class="modal hide fade">
-        </div>
-
-        <div id="modal_loading" class="hide">
-            <div class="modal-header">
-              <a href="#" class="close">×</a>
-              <h3></h3>
-            </div>
-            <div class="modal-body">
-                <div class="loading">
-                  <div class="ball"></div>
-                  <div class="ball1"></div>
-                </div>
-            </div>
-            <div class="modal-footer">
-              <button class="btn" data-action="cancel">Cancel</button>
-            </div>
-        </div>
-
+        <%= erb :force_reset, :layout => false %>
+        <%= erb :working, :layout => false %>
     </body>
 </html>

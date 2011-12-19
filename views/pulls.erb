@@ -2,7 +2,7 @@
 <div>Showing pull requests <%= ((@page * @per_page) + 1).to_s %> - <%= ((@page * @per_page) + @pull_requests.size).to_s %></div>
 
 <% @pull_requests.each do |pr| %>
-<div class="pull_request well" data-issue="<%= pr["number"] %>">
+<div class="pull_request well" data-issue="<%= pr["number"] %>" data-github-url="<%= pr["html_url"] %>" data-title="<%= pr["title"] %>">
   <% if pr["assignee"] %>
   <div class="pull_request_assignee">
     <a href="http://github.com/<%= pr["assignee"]["login"] %>" target="_blank">
@@ -13,7 +13,7 @@
   <div class="pull_request_number">#<%= pr["number"] %></div>
   <div class="pull_request_info">
     <h3>
-      <a href="<%= pr["html_url"] %>" class="pull_request_title" target="_blank"><%=h pr["title"] %></a>
+    <%=h pr["title"] %>
     <% if pr["labels"] %> 
       <% pr["labels"].each do |label| %>
         <span class="label github-label" style="background-color:#<%= label["color"] %>"><%= label["name"] %></span>
@@ -21,12 +21,8 @@
     <% end %>
     </h3>
     <span class="author">
-      by <a href="http://github.com/<%= pr["user"]["login"] %>" target="_blank"><%= pr["user"]["login"] %> <%=time_ago pr["created_at"] %> ago</a>
+      by <a href="http://github.com/<%= pr["user"]["login"] %>" target="_blank"><%= pr["user"]["login"] %></a> <%=time_ago pr["created_at"] %> ago
     </span>
-  </div>
-  <div class="pull_request_actions">
-    <button class="btn primary small" data-issue="<%= pr["number"] %>" data-action="validate" data-github-url="<%= pr["html_url"] %>" data-title="<%= pr["title"] %>" <% if !@modified_files.empty? %>disabled="disabled"<% end %>>Validate</button>
-    <button class="btn success small" data-issue="<%= pr["number"] %>" data-action="merge" data-github-url="<%= pr["html_url"] %>" data-title="<%= pr["title"] %>" <% if !@modified_files.empty? %>disabled="disabled"<% end %>>Merge</button>
   </div>
 </div>
 <% end %>

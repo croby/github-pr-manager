@@ -18,50 +18,59 @@ button.btn.small.refresh {padding:0px 5px;margin-top:9px;float:right;font-size:1
 .sidebar .new{display:none;}
 .sidebar .reset{margin-bottom:5px;}
 
+/* Commit list */
+.list_data .sha{width:89px;}
+.list_data .author{width:128px;}
+.list_data .msg{width:542px;}
+.list_data code{background-color:#fff;}
+.list_data table td{padding:2px;}
+
 /* Pull Requests */
-.pull_request{float:left;width:670px;margin:10px 0px;position:relative;}
+.pull_request{float:left;width:670px;margin:10px 0px;position:relative;cursor:pointer;}
 .pull_request h3{font-size:14px;padding:0;margin:0;line-height:1.3em;}
 .pull_request a.pull_request_title{color:black;font-weight:bold;}
 .pull_request span.author{float:left;width:100%;}
 .pull_request span.author a{color:#5F5F5F;margin:0 0 1em 0;}
 .pull_request .label.github-label{text-transform:none;font-size:11px;}
 .pull_request .pull_request_number{float:left;width:40px;margin-right:10px;}
-.pull_request .pull_request_info{float:left;width:460px;}
-.pull_request .pull_request_actions{float:right;margin-right:20px;}
+.pull_request .pull_request_info{float:left;width:570px;}
 .pull_request .pull_request_assignee{position:absolute;top:0;right:0;}
 .pull_request .pull_request_assignee img{height:16px;width:16px;border-radius:2px;background-color:#FCFF00;padding:2px;border:1px solid #DDDDDD;}
 
-/* Merging */
-#validate #validate_in_progress h3{text-align:center;}
-#validate{width:800px;margin-left:-400px;}
-#validate .modal-header h3{line-height:1.2em;padding:10px;}
-#validate .modal-header h3 a{text-decoration:none;color:black;}
-#validate .modal-header h3 a:hover{text-decoration:underline;}
-#validate table td{padding:2px;}
+/* Pull Request Focus */
+#pull_request_focus{margin-bottom:50px;}
+#pull_request_focus .back{margin:8px 0px 10px 0px;}
+#pull_request_focus .focus-in-progress h3{text-align:center;margin-bottom:20px}
+#pull_request_focus a{color:black;font-weight:500;}
+#pull_request_focus h3 a{text-decoration:none;color:black;}
+#pull_request_focus .view_diff_link{float:right;}
+#pull_request_focus .focus_overview{font-size:16px;}
+#pull_request_focus .focus_labels{margin:10px 0px;}
+#pull_request_focus .focus_details{padding-left:60px;margin-top:32px}
+#pull_request_focus .focus_details img{float:left;margin-left:-60px;position:relative;width:48px;height:48px;border-radius:5px;}
+#pull_request_focus .focus_details h4{line-height:16px;margin-bottom:4px;}
+#pull_request_focus div.well{word-wrap:break-word;}
+#pull_request_focus .focus_local_state{margin-top:20px;}
+#pull_request_focus .conflict{padding:10px;background-color:#BD2C00;color:#fff;font-weight:500;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;}
+#pull_request_focus .focus_actions{margin-top:10px;}
+#pull_request_focus .focus_actions div.right{float:right;}
 
-.list_data{max-height:300px;overflow-y:auto;overflow-x:hidden;}
-.list_data .sha{width:89px;}
-.list_data .author{width:128px;}
-.list_data .msg{width:542px;}
-.list_data code{background-color:#fff;}
+#pull_request_focus .focus_step.merge{margin-top:20px;background-color:#D3E5EB;border-radius:6px;}
+#pull_request_focus .focus_step.merge label, #pull_request_focus .focus_step.merge span{width:100%;}
+#pull_request_focus .focus_step.merge .merge_header{text-align:left;font-weight:bold;font-size:16px;color:#fff;background-color:#448DA6;padding:5px;border-radius:6px 6px 0px 0px;text-shadow:-1px -1px 0 rgba(0, 0, 0, 0.3);}
+#pull_request_focus .focus_step.merge .merge_container{padding:10px;}
+#pull_request_focus .focus_step.merge .merge_message_header{margin-bottom:10px;float:left;}
+#pull_request_focus .focus_step.merge .merge_message{width:95%;height:100px;margin-bottom:10px;}
+#pull_request_focus .focus_step.merge .merge_actions{text-align:right;margin-top:20px;}
 
-.merge_step_one .well{margin-top:10px;}
-
-.merge_step_three_commit_authors tr.selected{background-image:linear-gradient(bottom,rgb(247,247,59) 7%,rgb(255,248,143) 54%);background-image:-o-linear-gradient(bottom,rgb(247,247,59) 7%,rgb(255,248,143) 54%);background-image:-moz-linear-gradient(bottom,rgb(247,247,59) 7%,rgb(255,248,143) 54%);background-image:-webkit-linear-gradient(bottom,rgb(247,247,59) 7%,rgb(255,248,143) 54%);background-image:-ms-linear-gradient(bottom,rgb(247,247,59) 7%,rgb(255,248,143) 54%);background-image:-webkit-gradient(linear,left bottom,left top,color-stop(0.07,rgb(247,247,59)),color-stop(0.54,rgb(255,248,143)));}
-.merge_step_three_commit_authors tr.selected code{background-color:transparent;}
-.merge_step_three_commit_authors td{cursor:pointer;}
-.merge_step_three_commit_authors td code:hover{text-decoration:underline;}
-
-.merge_message_step, .merge_message_step label, .merge_message_step span{width:100%;}
-.merge_message_step label{text-align:left;font-weight:bold;font-size:16px;}
-.merge_message_step #merge_message_header{margin-bottom:10px;float:left;}
-.merge_message_step #merge_message{width:80%;height:100px;margin-left:10px;}
+#pull_request_focus .focus_step .authors tr.selected{background-image:linear-gradient(bottom,rgb(247,247,59) 7%,rgb(255,248,143) 54%);background-image:-o-linear-gradient(bottom,rgb(247,247,59) 7%,rgb(255,248,143) 54%);background-image:-moz-linear-gradient(bottom,rgb(247,247,59) 7%,rgb(255,248,143) 54%);background-image:-webkit-linear-gradient(bottom,rgb(247,247,59) 7%,rgb(255,248,143) 54%);background-image:-ms-linear-gradient(bottom,rgb(247,247,59) 7%,rgb(255,248,143) 54%);background-image:-webkit-gradient(linear,left bottom,left top,color-stop(0.07,rgb(247,247,59)),color-stop(0.54,rgb(255,248,143)));}
+#pull_request_focus .focus_step .authors tr.selected code{background-color:transparent;}
+#pull_request_focus .focus_step .authors td{cursor:pointer;}
+#pull_request_focus .focus_step .authors td code:hover{text-decoration:underline;}
 
 /* Loading Animation */
-.loading{height:70px;}
-#pull_request_loading{margin-top:150px}
-#pull_request_loading h3{text-align:center;margin-bottom:50px}
-#modal_loading .loading, #validate .loading{margin-top:20px;}
+.loading.inpage{height:70px;margin-top:150px}
+.loading h3{text-align:center;margin-bottom:50px}
 
 /* This awesome CSS came from http://www.alessioatzeni.com/blog/css3-loading-animation-loop/ */
 .ball{background-color:rgba(0,0,0,0);border:5px solid rgba(4,156,219,0.9);opacity:.9;border-top:5px solid rgba(0,0,0,0);border-left:5px solid rgba(0,0,0,0);border-radius:50px;box-shadow:0 0 35px #0064CD;width:50px;height:50px;margin:0 auto;-moz-animation:spin 2s infinite linear;-webkit-animation:spin 2s infinite linear;}
