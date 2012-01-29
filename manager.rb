@@ -129,7 +129,7 @@ class GithubPRManager < Sinatra::Base
     pr = do_request("https://api.github.com/repos/#{CONFIG["repo"]["org"]}/#{CONFIG["repo"]["repo"]}/pulls/#{pull_req_id}", true)
     if CONFIG["repo"]["issues"]
       issue = do_request("https://api.github.com/repos/#{CONFIG["repo"]["org"]}/#{CONFIG["repo"]["repo"]}/issues/#{pull_req_id}", true)
-      pr.merge!(issue)
+      pr = issue.merge!(pr)
     end
     pr
   end
