@@ -1,57 +1,59 @@
-<button class="btn back">&larr; Back to pull requests</button>
-<div class="focus_step">
-  <h2>Pull Request #<%= @pr["number"] %></h2>
-  <p class="focus_overview">
-    <a href="http://github.com/<%= @pr["user"]["login"] %>" target="_blank"><%= @pr["user"]["login"] %></a> wants someone to merge <%= @pr["commits"] %> commit<% if @pr["commits"] > 1 %>s<% end %> into <code><%= @pr["base"]["label"] %></code> from <code><%= @pr["head"]["label"] %></code>
-  </p>
-  <% if @pr["labels"] %> 
-    <div class="focus_labels">
-    <% @pr["labels"].each do |label| %>
-      <span class="label github-label" style="background-color:#<%= label["color"] %>"><%= label["name"] %></span>
+<div id="pull_request_focus" data-issue="<%= @pr["number"] %>">
+  <button class="btn back">&larr; Back to pull requests</button>
+  <div class="focus_step">
+    <h2>Pull Request #<%= @pr["number"] %></h2>
+    <p class="focus_overview">
+      <a href="http://github.com/<%= @pr["user"]["login"] %>" target="_blank"><%= @pr["user"]["login"] %></a> wants someone to merge <%= @pr["commits"] %> commit<% if @pr["commits"] > 1 %>s<% end %> into <code><%= @pr["base"]["label"] %></code> from <code><%= @pr["head"]["label"] %></code>
+    </p>
+    <% if @pr["labels"] %> 
+      <div class="focus_labels">
+      <% @pr["labels"].each do |label| %>
+        <span class="label github-label" style="background-color:#<%= label["color"] %>"><%= label["name"] %></span>
+      <% end %>
+      </div>
+    <% end %>
+    <a href="<%= @pr["html_url"] %>/files" target="_blank" class="view_diff_link">View Diff</a>
+    <div class="focus_details">
+      <img src="<%= @pr["user"]["avatar_url"] %>"/>
+      <h4><%= @pr["title"] %></h4>
+      <div class="focus_user_info">opened <%=time_ago @pr["created_at"] %> ago</div>
+      <div class="well"><%=md @pr["body"] %></div>
+    </div>
+
+    <div class="list_data">
+      <h5><%= @pr["commits"] %> commit<% if @pr["commits"] > 1 %>s<% end %>, <%= @pr["changed_files"] %> changed file<% if @pr["changed_files"] > 1 %>s<% end %></h5>
+      <%= erb :commit_list, :layout => false %>
+    </div>
+
+    <div class="focus_local_state">
+      <h4>Local State</h4>
+      <span>Current branch:
+        <code class="current_branch"><%= @current_branch %></code>
+      </span>
+    </div>
+
+    <div class="focus_actions">
+      <% if @pr["mergeable"] %>
+        <button class="btn info" data-action="reset" data-base="<%= @pr["base"]["label"] %>">Reset to <%= @pr["base"]["ref"] %></button>
+        <button class="btn info" data-action="validate">Validate</button>
+        <button class="btn info" data-action="tests" style="display:none">Run unit tests</button>
+        <div class="right">
+          <% if @pr["commits"] > 1 %>
+            <button class="btn primary" data-action="squash">Merge via squash</button>
+          <% end %>
+          <button class="btn success" data-action="merge">Merge</button>
+        </div>
+    <% else %>
+      <p class="conflict">This pull request has a merge conflict</p>
     <% end %>
     </div>
-  <% end %>
-  <a href="<%= @pr["html_url"] %>/files" target="_blank" class="view_diff_link">View Diff</a>
-  <div class="focus_details">
-    <img src="<%= @pr["user"]["avatar_url"] %>"/>
-    <h4><%= @pr["title"] %></h4>
-    <div class="focus_user_info">opened <%=time_ago @pr["created_at"] %> ago</div>
-    <div class="well"><%=md @pr["body"] %></div>
   </div>
 
-  <div class="list_data">
-    <h5><%= @pr["commits"] %> commit<% if @pr["commits"] > 1 %>s<% end %>, <%= @pr["changed_files"] %> changed file<% if @pr["changed_files"] > 1 %>s<% end %></h5>
-    <%= erb :commit_list, :layout => false %>
+  <div class="focus_step merge hide" data-step="squash">
+    <%= erb :merge_message, :layout => false, :locals => {:squash => true} %>
   </div>
 
-  <div class="focus_local_state">
-    <h4>Local State</h4>
-    <span>Current branch:
-      <code class="current_branch"><%= @current_branch %></code>
-    </span>
+  <div class="focus_step merge hide" data-step="merge">
+    <%= erb :merge_message, :layout => false, :locals => {:squash => false} %>
   </div>
-
-  <div class="focus_actions">
-    <% if @pr["mergeable"] %>
-      <button class="btn info" data-action="reset" data-base="<%= @pr["base"]["label"] %>">Reset to <%= @pr["base"]["ref"] %></button>
-      <button class="btn info" data-action="validate">Validate</button>
-      <button class="btn info" data-action="tests" style="display:none">Run unit tests</button>
-      <div class="right">
-        <% if @pr["commits"] > 1 %>
-          <button class="btn primary" data-action="squash">Merge via squash</button>
-        <% end %>
-        <button class="btn success" data-action="merge">Merge</button>
-      </div>
-  <% else %>
-    <p class="conflict">This pull request has a merge conflict</p>
-  <% end %>
-  </div>
-</div>
-
-<div class="focus_step merge hide" data-step="squash">
-  <%= erb :merge_message, :layout => false, :locals => {:squash => true} %>
-</div>
-
-<div class="focus_step merge hide" data-step="merge">
-  <%= erb :merge_message, :layout => false, :locals => {:squash => false} %>
 </div>

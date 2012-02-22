@@ -1,39 +1,44 @@
 $(function() {
-    var current_page = 0,
-        current_issue = false,
-        merge_type = false;
+    var current_page = 1,
+        merge_type = false,
+        History = window.History;
+
+    $(window).on('statechange', function() {
+        var state = History.getState();
+        if ( state.data.page ) {
+            refresh_pull_requests( state.data.page );
+        } else {
+            show_pull_request( state.data.issue, state.data.github_url );
+        }
+    });
 
     var handle_pagination_click = function( $elt ) {
         if ( !$elt.parent( "li" ).hasClass( "disabled" ) ) {
             var direction = $elt.parent( "li" ).hasClass( "prev" ) ? -1 : 1;
             current_page += direction;
-            refresh_pull_requests();
-            if ( current_page === 0 ) {
-                $( ".pagination li.prev" ).addClass( "disabled" );
-            } else {
-                $( ".pagination li.disabled" ).removeClass( "disabled" );
-            }
+            History.pushState(
+                {
+                    page: current_page
+                },
+                document.title,
+                "/pulls/" + current_page
+            );
         }
     };
 
-
-    var refresh_pull_requests = function() {
-        $( ".pagination" ).hide();
-        $( "#pull_requests" ).fadeOut( "fast", function() {
+    var refresh_pull_requests = function( page, callback ) {
+        current_page = page || current_page;
+        $( "#main" ).fadeOut( "fast", function() {
             $( "#pull_request_loading" ).fadeIn( "fast", function() {
                 $.ajax({
-                    url: "/pulls",
-                    data: {
-                        page: current_page
-                    },
+                    url: "/pulls/" + current_page,
                     success: function( data ) {
                         $( "#pull_request_loading" ).fadeOut( "fast", function() {
-                            $( "#pull_requests" ).html( data.pulls ).show();
-                            $( ".pagination li.next" ).toggleClass( "disabled", !data.has_next_page );
-                            if ( $( ".pagination li.disabled" ).length !== 2 ) {
-                                $( ".pagination" ).show();
-                            }
+                            $( "#main" ).html( data.pulls ).show();
                             $( "#main" ).fadeIn( "fast" );
+                            if ( $.isFunction(callback) ) {
+                                callback();
+                            }
                         });
                     }
                 });
@@ -78,25 +83,13 @@ $(function() {
         });
     };
 
-    var back_to_pull_requests = function( callback ) {
-        $( "#pull_request_focus" ).fadeOut( "fast", function() {
-            $( "#pull_requests" ).fadeIn( "fast", function() {
-                if ( $.isFunction( callback ) ) {
-                    callback();
-                }
-            });
-        });
-    };
-
     var show_pull_request = function( issue, url ) {
-        current_issue = issue;
-        $( ".pagination" ).hide();
-        $( "#pull_requests" ).fadeOut( "fast", function() {
+        $( "#main" ).fadeOut( "fast", function() {
             $( "#focus_loading" ).fadeIn( "fast", function() {
                 get_pull_request( issue, function( data ) {
-                    $( "#pull_request_focus" ).hide().html( data );
+                    $( "#main" ).html( data );
                     $( "#focus_loading" ).fadeOut( "fast", function() {
-                        $( "#pull_request_focus" ).fadeIn( "fast" );
+                        $( "#main" ).fadeIn( "fast" );
                     });
                 });
             });
@@ -105,7 +98,7 @@ $(function() {
 
     var get_pull_request = function( issue, callback ) {
         $.ajax({
-            url: "/pulls/" + issue,
+            url: "/pull/" + issue,
             type: "GET",
             success: function( data ) {
                 if ( $.isFunction( callback ) ) {
@@ -131,7 +124,8 @@ $(function() {
         }
     };
 
-    var do_validate = function( issue, callback ) {
+    var do_validate = function( callback ) {
+        var issue = $( "#pull_request_focus" ).attr("data-issue");
         $.ajax({
             url: "/validate/" + issue,
             type: "GET",
@@ -177,7 +171,8 @@ $(function() {
         return header + "\n\n" + body;
     };
 
-    var do_merge = function( issue, type, author, callback ) {
+    var do_merge = function( type, author, callback ) {
+        var issue = $( "#pull_request_focus" ).attr("data-issue");
         var params = {
             message: get_merge_message()
         };
@@ -197,15 +192,16 @@ $(function() {
         });
     };
 
-    var finish_merge = function( issue ) {
-        back_to_pull_requests( function() {
+    var finish_merge = function() {
+        var issue = $( "#pull_request_focus" ).attr("data-issue");
+        refresh_pull_requests( current_page, function() {
             $( ".pull_request[data-issue='" + issue + "']" ).fadeOut( "fast" );
         });
     };
 
     var add_bindings = function() {
 
-        $( ".pagination" ).on( "click", "li a", function( e ) {
+        $( "body" ).on( "click", ".pagination li a", function( e ) {
             handle_pagination_click( $( this ) );
             e.preventDefault();
         });
@@ -214,21 +210,24 @@ $(function() {
             backdrop: "static"
         });
 
-        $( "#pull_request_focus" ).on( "hide", function() {
-            current_issue = false;
-        });
-
         $( ".modal ").on( "click", "button.closebtn", function( e ) {
             $( this ).parents( ".modal" ).modal( "hide" );
         });
 
         $( "div.content" ).on( "click", ".pull_request", function( e ) {
-            show_pull_request( $( this ).attr( "data-issue" ), $( this ).attr( "data-github-url" ) );
+            History.pushState(
+                {
+                    issue: $( this ).attr( "data-issue" ),
+                    github_url: $( this ).attr( "data-github-url" )
+                },
+                document.title,
+                "/pull/" + $( this ).attr( "data-issue" )
+            );
+            e.preventDefault();
         });
 
         $( "div.content" ).on( "click", "button#refresh_pulls", function( e ) {
-            current_page = 0;
-            refresh_pull_requests();
+            refresh_pull_requests( 1 );
         });
 
         $( "div.sidebar" ).on( "click", "button#refresh", function( e ) {
@@ -251,9 +250,19 @@ $(function() {
             }
         });
 
-        $( "#pull_request_focus" ).on( "click", "button.back", back_to_pull_requests);
+        $( "body" ).on( "click", "#pull_request_focus button.back", function() {
+            History.pushState(
+                {
+                    page: current_page
+                },
+                document.title,
+                "/pulls/" + current_page
+            );
+        });
 
-        $( "#pull_request_focus" ).on( "click", "button[data-action]", function( e ) {
+        $( "body" ).on( "click",
+            "#pull_request_focus button[data-action]",
+            function( e ) {
             var action = $( this ).attr( "data-action" );
             toggle_buttons( false );
             switch (action) {
@@ -265,7 +274,7 @@ $(function() {
                     break;
                 case "validate":
                     working( true );
-                    do_validate( current_issue, function() {
+                    do_validate( function() {
                         toggle_buttons( true );
                         working( false );
                     });
@@ -282,8 +291,8 @@ $(function() {
                     if ( merge_type === "squash" ) {
                         author = $( ".authors tr.selected" ).text();
                     }
-                    do_merge( current_issue, merge_type, author, function() {
-                        finish_merge( current_issue );
+                    do_merge( merge_type, author, function() {
+                        finish_merge( );
                         working( false );
                     });
                     break;
@@ -297,7 +306,9 @@ $(function() {
             }
         });
 
-        $( "#pull_request_focus" ).on( "click", ".authors tr", function( e ) {
+        $( "body" ).on( "click",
+            "#pull_request_focus .authors tr",
+            function( e ) {
             if ( !$( this ).hasClass( "selected" ) ) {
                 $( ".authors tr.selected" ).removeClass( "selected" );
                 $( this ).addClass( "selected" );
@@ -307,7 +318,9 @@ $(function() {
 
     var init = function() {
         add_bindings();
-        refresh_pull_requests();
+        if ( $( "#pull_request_focus" ).length === 0 ) {
+            refresh_pull_requests();
+        }
     };
 
     init();

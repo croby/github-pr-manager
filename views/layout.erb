@@ -7,6 +7,10 @@
         <link rel="stylesheet" href="/css/style.css" type="text/css" />
         <script src="/javascript/lib/jquery-1.7.1.js"></script>
         <script src="/javascript/lib/bootstrap-modal.js"></script>
+        <script src="/javascript/lib/history.js/history.js"></script>
+        <script src="/javascript/lib/history.js/history.adapter.jquery.js"></script>
+        <script src="/javascript/lib/history.js/history.html4.js"></script>
+        <script src="/javascript/lib/history.js/json2.js"></script>
         <script src="/javascript/app.js"></script>
     </head>
     <body>
@@ -27,14 +31,8 @@
           </div>
           <div class="content" id="main">
               <%= yield %>
-              <div id="pull_requests">
-              </div>
-              <div id="pull_request_focus">
-              </div>
-              <div class="pagination" style="display:none">
-                  <%= erb :pagination, :layout => false %>
-              </div>
           </div>
+          <%= erb :loaders, :layout => false %>
         </div>
 
         <%= erb :force_reset, :layout => false %>

@@ -74,7 +74,7 @@ class GithubPRManager < Sinatra::Base
 
   # Grab all the pull requests for the current repository
   def get_pull_requests(page)
-    page = page || 0
+    page = page || 1
     pull_requests = do_request("https://api.github.com/repos/#{CONFIG["repo"]["org"]}/#{CONFIG["repo"]["repo"]}/pulls?page=#{page}&per_page=#{PER_PAGE}", true)
     if CONFIG["repo"]["issues"]
       ret = []
@@ -234,6 +234,20 @@ class GithubPRManager < Sinatra::Base
     do_request("https://api.github.com/repos/#{CONFIG["repo"]["org"]}/#{CONFIG["repo"]["repo"]}/pulls/#{pr["number"]}", false, "PATCH", {:state => "closed"})
   end
 
+  def set_globals
+    @org_title = ORG_TITLE
+    @org_url = "http://github.com/#{CONFIG["repo"]["org"]}"
+    @repo_title = REPO_TITLE
+    @repo_url = "http://github.com/#{CONFIG["repo"]["org"]}/#{CONFIG["repo"]["repo"]}"
+    @per_page = PER_PAGE.to_i
+    if @pull_requests
+      @page = params[:page] ? params[:page].to_i : 1
+      @has_next_page = @per_page <= @pull_requests.size
+    end
+    puts "HAS NEXT PAGE"
+    puts @has_next_page
+  end
+
   # ========================
   # = Sinatra view helpers =
   # ========================
@@ -255,35 +269,36 @@ class GithubPRManager < Sinatra::Base
   # ================================
 
   get "/" do
-    @org_title = ORG_TITLE
-    @org_url = "http://github.com/#{CONFIG["repo"]["org"]}"
-    @repo_title = REPO_TITLE
-    @repo_url = "http://github.com/#{CONFIG["repo"]["org"]}/#{CONFIG["repo"]["repo"]}"
+    set_globals
+    @page = 1
     @current_branch, @modified_files = get_repo_status
     erb :index
   end
 
-  get "/pulls" do
-    params[:page] ||= 0
+  get "/pulls/:page" do
+    params[:page] ||= 1
     pull_requests = get_pull_requests(params[:page])
     @pull_requests = pull_requests[:pull_requests]
     @assignees = pull_requests[:assignees]
     @labels = pull_requests[:labels]
     @current_branch, @modified_files = get_repo_status
-    @page = params[:page].to_i
-    @per_page = PER_PAGE.to_i
-    pulls = erb :pulls, :layout => false
-    has_next_page = @per_page.eql? @pull_requests.size
-    content_type :json
-    {:pulls => pulls, :has_next_page => has_next_page}.to_json
+    set_globals
+    pulls = erb :pulls, :layout => !request.xhr?
+    if request.xhr?
+      content_type :json
+      {:pulls => pulls, :has_next_page => @has_next_page}.to_json
+    else
+      pulls
+    end
   end
 
-  get "/pulls/:pull_req_id" do
+  get "/pull/:pull_req_id" do
     @pr = get_pull_req(params[:pull_req_id])
     @current_branch, @modified_files = get_repo_status
     @commits = get_commits(params[:pull_req_id])
     @authors = get_authors(@commits)
-    erb :pull_request_focus, :layout => false
+    set_globals
+    erb :pull_request_focus, :layout => !request.xhr?
   end
 
   get "/sidebar" do

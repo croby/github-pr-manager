@@ -1,28 +1,31 @@
-<h2>Pull Requests<button class="btn small refresh" title="Refresh pull request from github" id="refresh_pulls">↻</button></h2>
-<div>Showing pull requests <%= ((@page * @per_page) + 1).to_s %> - <%= ((@page * @per_page) + @pull_requests.size).to_s %></div>
+<div id="pull_requests">
+  <h2>Pull Requests<button class="btn small refresh" title="Refresh pull request from github" id="refresh_pulls">↻</button></h2>
+  <div>Showing pull requests <%= (((@page-1) * @per_page) + 1).to_s %> - <%= (((@page-1) * @per_page) + @pull_requests.size).to_s %></div>
 
-<% @pull_requests.each do |pr| %>
-<div class="pull_request well" data-issue="<%= pr["number"] %>" data-github-url="<%= pr["html_url"] %>" data-title="<%= pr["title"] %>">
-  <% if pr["assignee"] %>
-  <div class="pull_request_assignee">
-    <a href="http://github.com/<%= pr["assignee"]["login"] %>" target="_blank">
-      <img src="<%= pr["assignee"]["avatar_url"] %>" alt="Assigned to <%= pr["assignee"]["login"] %>" title="Assigned to <%= pr["assignee"]["login"] %>"/>
+  <% @pull_requests.each do |pr| %>
+  <div class="pull_request well" data-issue="<%= pr["number"] %>" data-github-url="<%= pr["html_url"] %>" data-title="<%= pr["title"] %>">
+    <a href="/pull/<%= pr["number"] %>">
+      <% if pr["assignee"] %>
+      <div class="pull_request_assignee">
+        <img src="<%= pr["assignee"]["avatar_url"] %>" alt="Assigned to <%= pr["assignee"]["login"] %>" title="Assigned to <%= pr["assignee"]["login"] %>"/>
+      </div>
+      <% end %>
+      <div class="pull_request_number">#<%= pr["number"] %></div>
+      <div class="pull_request_info">
+        <h3>
+        <%=h pr["title"] %>
+        <% if pr["labels"] %> 
+          <% pr["labels"].each do |label| %>
+            <span class="label github-label" style="background-color:#<%= label["color"] %>"><%= label["name"] %></span>
+          <% end %>
+        <% end %>
+        </h3>
+        <span class="author">
+          by <%= pr["user"]["login"] %> <%= time_ago pr["created_at"] %> ago
+        </span>
+      </div>
     </a>
   </div>
   <% end %>
-  <div class="pull_request_number">#<%= pr["number"] %></div>
-  <div class="pull_request_info">
-    <h3>
-    <%=h pr["title"] %>
-    <% if pr["labels"] %> 
-      <% pr["labels"].each do |label| %>
-        <span class="label github-label" style="background-color:#<%= label["color"] %>"><%= label["name"] %></span>
-      <% end %>
-    <% end %>
-    </h3>
-    <span class="author">
-      by <a href="http://github.com/<%= pr["user"]["login"] %>" target="_blank"><%= pr["user"]["login"] %></a> <%=time_ago pr["created_at"] %> ago
-    </span>
-  </div>
+  <%= erb :pagination, :layout => false %>
 </div>
-<% end %>

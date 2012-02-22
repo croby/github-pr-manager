@@ -1,4 +1,6 @@
-<ul>
-    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
-    <li class="next"><a href="#">Next &rarr;</a></li>
-</ul>
+<div class="pagination">
+  <ul>
+      <li class="prev<% if @page.eql? 1 %> disabled<% end %>"><a href="<% if @page.eql? 1 %>#<% else %>/pulls/<%= @page - 1 %><%  end %>">&larr; Previous</a></li>
+      <li class="next<% unless @has_next_page %> disabled<% end %>"><a href="<% if @has_next_page %>/pulls/<%= @page + 1  %><% else %>#<% end %>">Next &rarr;</a></li>
+  </ul>
+</div>
