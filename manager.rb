@@ -244,8 +244,6 @@ class GithubPRManager < Sinatra::Base
       @page = params[:page] ? params[:page].to_i : 1
       @has_next_page = @per_page <= @pull_requests.size
     end
-    puts "HAS NEXT PAGE"
-    puts @has_next_page
   end
 
   # ========================
