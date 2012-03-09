@@ -113,16 +113,18 @@ class GithubPRManager < Sinatra::Base
     [current_branch, modified_files]
   end
 
-  # Reset the current branch to master
+  # Reset the current branch to the branch passed in
   # if force, pass the -f option on to the checkout
-  def reset_to_master(force)
+  def reset(branch, force)
+    branch = branch.index(":") ? branch[branch.index(":")+1..-1] : branch
     args = {
-      :clone => CONFIG["local"]["clone"]
+      :clone => CONFIG["local"]["clone"],
+      :branch => branch
     }
     if force
       args[:force] = "-f"
     end
-    `#{Templates.reset_to_master(args)}`
+    `#{Templates.reset(args)}`
   end
 
   def get_pull_req(pull_req_id)
@@ -305,7 +307,7 @@ class GithubPRManager < Sinatra::Base
   end
 
   post "/reset" do
-    reset_to_master(params[:force])
+    reset(params[:branch], params[:force])
     content_type :json
     @current_branch, @modified_files = get_repo_status
     {:branch => @current_branch, :sidebar => render_sidebar}.to_json

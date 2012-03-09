@@ -65,7 +65,8 @@ $(function() {
 
     var do_reset = function( branch, force, callback ) {
         var params = {
-            force: force || false
+            force: force || false,
+            branch: branch
         };
         $.ajax({
             url: "/reset",
