@@ -8,7 +8,7 @@ GEM
     json (1.6.1)
     mime-types (1.17.2)
     mustache (0.99.4)
-    rack (1.3.5)
+    rack (1.4.1)
     rack-protection (1.1.4)
       rack
     redcarpet (2.0.0)
